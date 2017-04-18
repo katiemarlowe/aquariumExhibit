@@ -9,8 +9,10 @@ from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
+from kivy.uix.video import Video
 
-id_1 = bytes(b'7F001AFC68')
+# id_1 = bytes(b'7F001AFC68')
+id_1 = bytes(b'82003BADA1')
 id_2 = bytes(b'7F001B20C4')
 id_3 = bytes(b'7F001B3B09')
 
@@ -34,21 +36,22 @@ class AquariumApp(App):
 
         self.welcome_screen = self.WelcomeScreen()
         root.add_widget(self.welcome_screen)
-        self.showing_content = False  ## whether the app is currently showing content
+        self.allow_scan = True  ## whether the app currently allows new scan
+        self.current_screen = self.welcome_screen
 
         self.salmon_screen = self.SalmonScreen()
         self.whale_screen = self.WhaleScreen()
         self.penguin_screen = self.PenguinScreen()
 
-        self.show_salmon = Clock.create_trigger(partial(self.show_content, self.welcome_screen, self.salmon_screen))
-        self.show_whale = Clock.create_trigger(partial(self.show_content, self.welcome_screen, self.whale_screen))
-        self.show_penguin = Clock.create_trigger(partial(self.show_content, self.welcome_screen, self.penguin_screen))
+        self.show_salmon = Clock.create_trigger(partial(self.show_content, self.salmon_screen))
+        self.show_whale = Clock.create_trigger(partial(self.show_content, self.whale_screen))
+        self.show_penguin = Clock.create_trigger(partial(self.show_content, self.penguin_screen))
 
         Clock.schedule_interval(self.get_rfid, 1.0)
         return root
 
     def get_rfid(self, dt):
-        if not self.showing_content:  ## don't read input if currently showing content
+        if self.allow_scan:  ## only read input if allowing scan
             rfid = read_rfid()
             if rfid:
                 if rfid == id_1:
@@ -58,13 +61,15 @@ class AquariumApp(App):
                 elif rfid == id_3:
                     self.show_penguin()
 
-    def show_content(self, old_screen, new_screen, dt, remove=False):
-        self.showing_content = False
-        self.root.remove_widget(old_screen)
+    def show_content(self, new_screen, dt):
+        self.allow_scan = False
+        self.root.remove_widget(self.current_screen)
         self.root.add_widget(new_screen)
-        if not remove:
-            self.showing_content = True
-            Clock.schedule_once(partial(self.show_content, new_screen, old_screen, remove=True), 5)
+        self.current_screen = new_screen
+        Clock.schedule_once(self.change_allow_scan, 10)
+
+    def change_allow_scan(self, dt):
+        self.allow_scan = not self.allow_scan
 
     def WelcomeScreen(self):
     	welcome_screen = FloatLayout()
@@ -91,7 +96,7 @@ class AquariumApp(App):
         if KIOSK_MODE == "THREATS":
             whale_screen.add_widget(Label(text="Whale Threats", font_size=20, pos_hint={'x':0, 'y':.3}))
         elif KIOSK_MODE == "FOOD":
-            whale_screen.add_widget(Label(text="Whale Food", font_size=20, pos_hint={'x':0, 'y':.3}))
+            whale_screen.add_widget(Image(source='img/whale-diet.png', pos_hint={'x':0, 'y':0}))
         elif KIOSK_MODE == "FAMILY":
             whale_screen.add_widget(Label(text="Whale Family", font_size=20, pos_hint={'x':0, 'y':.3}))
         return whale_screen
@@ -102,6 +107,7 @@ class AquariumApp(App):
             penguin_screen.add_widget(Label(text="Penguin Threats", font_size=20, pos_hint={'x':0, 'y':.3}))
         elif KIOSK_MODE == "FOOD":
             penguin_screen.add_widget(Label(text="Penguin Food", font_size=20, pos_hint={'x':0, 'y':.3}))
+            penguin_screen.add_widget(Video(source="img/pandas.mov", pos_hint={'x':0, 'y':0}, state='play'))
         elif KIOSK_MODE == "FAMILY":
             penguin_screen.add_widget(Label(text="Penguin Family", font_size=20, pos_hint={'x':0, 'y':.3}))
         return penguin_screen
