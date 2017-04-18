@@ -1,4 +1,5 @@
 import time
+import argparse
 from rfid_reader import *
 from functools import partial
 from kivy.app import App
@@ -16,7 +17,10 @@ id_1 = bytes(b'82003BADA1')
 id_2 = bytes(b'7F001B20C4')
 id_3 = bytes(b'7F001B3B09')
 
-KIOSK_MODE = "THREATS"  ## "FOOD", "FAMILY", or "THREATS"
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", help="", type=str)
+KIOSK_MODE = parser.parse_args().mode  ## "FOOD", "FAMILY", or "THREATS"
+print('KIOSK MODE: ', KIOSK_MODE)
 
 
 class RootWidget(FloatLayout):
