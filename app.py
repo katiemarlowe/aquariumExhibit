@@ -23,8 +23,14 @@ KIOSK_MODE = parser.parse_args().mode  ## "FOOD", "FAMILY", or "THREATS"
 print('KIOSK MODE: ', KIOSK_MODE)
 
 HAS_VIDEO = {'FOOD': {'salmon': None, 'whale': None, 'penguin': None}, 
-            'FAMILY': {'salmon': None, 'whale': None, 'penguin': None},
-            'THREATS': {'salmon': Video(source="img/salmon-threats.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'}), 'whale': None, 'penguin': None}}
+            'FAMILY': {
+                'salmon': Video(source="img/salmon-family.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'})},
+                'whale': None, 
+                'penguin': Video(source="img/penguin-family.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'})},
+            'THREATS': {
+                'salmon': Video(source="img/salmon-threats.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'}), 
+                'whale': Video(source="img/whale-threats.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'}), 
+                'penguin': None}}
 
 icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.4, 'y':-.4})
 icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.4, 'y':-.4})
@@ -137,23 +143,14 @@ class AquariumApp(App):
 
     def SalmonScreen(self):
         salmon_screen = FloatLayout()
-        if KIOSK_MODE == "THREATS":
-            # salmon_threat_vid = 
+        if KIOSK_MODE == "THREATS" or KIOSK_MODE == "FAMILY":
             salmon_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['salmon'])
-        elif KIOSK_MODE == "FOOD":
-            salmon_screen.add_widget(Label(text="Salmon Food", font_size=20, pos_hint={'x':0, 'y':.3}))
-        elif KIOSK_MODE == "FAMILY":
-            salmon_screen.add_widget(Label(text="Salmon Family", font_size=20, pos_hint={'x':0, 'y':.3}))
         return salmon_screen
 
     def WhaleScreen(self):
         whale_screen = FloatLayout()
         if KIOSK_MODE == "THREATS":
-            whale_screen.add_widget(Label(text="Whale Threats", font_size=20, pos_hint={'x':0, 'y':.3}))
-        # elif KIOSK_MODE == "FOOD":
-        #     whale_screen.add_widget(Image(source='img/whale-diet.png', pos_hint={'x':0, 'y':0}))
-        # elif KIOSK_MODE == "FAMILY":
-            # whale_screen.add_widget(whale_family_noscan)
+            whale_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['whale'])
         return whale_screen
 
     def PenguinScreen(self):
@@ -164,7 +161,7 @@ class AquariumApp(App):
             penguin_screen.add_widget(Label(text="Penguin Food", font_size=20, pos_hint={'x':0, 'y':.3}))
             # penguin_screen.add_widget(Video(source="img/pandas.mov", pos_hint={'x':0, 'y':0}, state='play', options={'eos': 'loop'}))
         elif KIOSK_MODE == "FAMILY":
-            penguin_screen.add_widget(Label(text="Penguin Family", font_size=20, pos_hint={'x':0, 'y':.3}))
+            penguin_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['penguin'])
         return penguin_screen
 
     def _update_rect(self, instance, value):
