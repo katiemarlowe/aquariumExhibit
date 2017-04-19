@@ -13,8 +13,8 @@ from kivy.uix.button import Button
 from kivy.uix.video import Video
 
 id_1 = bytes(b'7F001AFC68')  ## salmon
-id_2 = bytes(b'82003BADA1')  
-# id_2 = bytes(b'7F001B20C4')  ## whale
+# id_2 = bytes(b'82003BADA1')  
+id_2 = bytes(b'7F001B20C4')  ## whale
 id_3 = bytes(b'7F001B3B09')  ## penguin
 
 parser = argparse.ArgumentParser()
@@ -28,12 +28,13 @@ HAS_VIDEO = {'FOOD': {'salmon': None, 'whale': None, 'penguin': None},
                 'whale': None, 
                 'penguin': Video(source="img/penguin-family.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'})},
             'THREATS': {
-                'salmon': Video(source="img/salmon-threats.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'}), 
+                'salmon': None, 
                 'whale': Video(source="img/whale-threats.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'}), 
                 'penguin': None}}
 
-icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.4, 'y':-.4})
-icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.4, 'y':-.4})
+icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.42, 'y':-.36})
+icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.42, 'y':-.36})
+icon_welcome_scan = Image(source='img/icon-welcome-scan.png', pos_hint={'x':.42, 'y':-.36})
 if KIOSK_MODE == "FAMILY":
     whale_noscan = Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0})
     whale_scan = Image(source='img/whale-family-scan.png', pos_hint={'x':0, 'y':0})
@@ -47,6 +48,8 @@ if KIOSK_MODE == "FOOD":
 if KIOSK_MODE == "THREATS":
     penguin_noscan = Image(source='img/penguin-threats-noscan.png', pos_hint={'x':0, 'y':0})
     penguin_scan = Image(source='img/penguin-threats-scan.png', pos_hint={'x':0, 'y':0})
+    salmon_noscan = Image(source='img/salmon-threats-noscan.png', pos_hint={'x':0, 'y':0})
+    salmon_scan = Image(source='img/salmon-threats-scan.png', pos_hint={'x':0, 'y':0})
 
 class RootWidget(FloatLayout):
 	def __init__(self, **kwargs):
@@ -142,13 +145,14 @@ class AquariumApp(App):
             self.penguin_screen.add_widget(penguin_scan)
 
     def WelcomeScreen(self):
-    	welcome_screen = FloatLayout()
-    	welcome_screen.add_widget(Label(text='Welcome!'))
-    	return welcome_screen
+        welcome_screen = FloatLayout()
+        welcome_screen.add_widget(Label(text='Welcome!', font_size='40pt'))
+        welcome_screen.add_widget(icon_welcome_scan)
+        return welcome_screen
 
     def SalmonScreen(self):
         salmon_screen = FloatLayout()
-        if KIOSK_MODE == "THREATS" or KIOSK_MODE == "FAMILY":
+        if KIOSK_MODE == "FAMILY":
             salmon_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['salmon'])
         return salmon_screen
 
