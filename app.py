@@ -11,6 +11,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 from kivy.uix.video import Video
+from kivy.uix.modalview import ModalView
+from kivy.uix.popup import Popup
 
 id_1 = bytes(b'7F001AFC68')  ## salmon
 # id_2 = bytes(b'82003BADA1')  
@@ -43,6 +45,9 @@ if KIOSK_MODE == "FOOD":
     whale_scan = Image(source='img/whale-food-scan.png', pos_hint={'x':0, 'y':0})
     salmon_noscan = Image(source='img/salmon-food-noscan.png', pos_hint={'x':0, 'y':0})
     salmon_scan = Image(source='img/salmon-food-scan.png', pos_hint={'x':0, 'y':0})
+    salmon_icon_1 = Button(background_normal='img/test-icon.png', pos_hint={'x':.8, 'y':.4}, size_hint=(.1, .1))
+    salmon_text_1 = ModalView(background='img/test-text.png', pos_hint={'x':.1, 'y':.1}, size_hint=(None, None), size=(400, 400))
+    salmon_icon_1.bind(on_press=salmon_text_1.open)
     penguin_noscan = Image(source='img/penguin-food-noscan.png', pos_hint={'x':0, 'y':0})
     penguin_scan = Image(source='img/penguin-food-scan.png', pos_hint={'x':0, 'y':0})
 if KIOSK_MODE == "THREATS":
@@ -90,6 +95,7 @@ class AquariumApp(App):
                 if self.current_vid_playing:
                     self.current_vid_playing.state = 'stop'
                     self.current_vid_playing = None
+                    self.current_screen.remove_widget(icon_scan)
                 if rfid == id_1:
                     self.show_salmon()
                 elif rfid == id_2:
@@ -112,6 +118,8 @@ class AquariumApp(App):
             else:
                 self.salmon_screen.clear_widgets()
                 self.salmon_screen.add_widget(salmon_noscan)
+                self.salmon_screen.add_widget(salmon_icon_1)
+                # self.salmon_screen.add_widget(salmon_text_1)
         if new_screen == self.penguin_screen:
             if HAS_VIDEO[KIOSK_MODE]['penguin']:
                 HAS_VIDEO[KIOSK_MODE]['penguin'].state = 'play'
