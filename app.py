@@ -37,24 +37,22 @@ HAS_VIDEO = {'FOOD': {'salmon': None, 'whale': None, 'penguin': None},
 icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.42, 'y':-.36})
 icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.42, 'y':-.36})
 icon_welcome_scan = Image(source='img/icon-welcome-scan.png', pos_hint={'x':.42, 'y':-.36})
-if KIOSK_MODE == "FAMILY":
-    whale_noscan = Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0})
-    whale_scan = Image(source='img/whale-family-scan.png', pos_hint={'x':0, 'y':0})
-if KIOSK_MODE == "FOOD":
-    whale_noscan = Image(source='img/whale-food-noscan.png', pos_hint={'x':0, 'y':0})
-    whale_scan = Image(source='img/whale-food-scan.png', pos_hint={'x':0, 'y':0})
-    salmon_noscan = Image(source='img/salmon-food-noscan.png', pos_hint={'x':0, 'y':0})
-    salmon_scan = Image(source='img/salmon-food-scan.png', pos_hint={'x':0, 'y':0})
-    salmon_icon_1 = Button(background_normal='img/test-icon.png', pos_hint={'x':.8, 'y':.4}, size_hint=(.1, .1))
-    salmon_text_1 = ModalView(background='img/test-text.png', pos_hint={'x':.1, 'y':.1}, size_hint=(None, None), size=(400, 400))
-    salmon_icon_1.bind(on_press=salmon_text_1.open)
-    penguin_noscan = Image(source='img/penguin-food-noscan.png', pos_hint={'x':0, 'y':0})
-    penguin_scan = Image(source='img/penguin-food-scan.png', pos_hint={'x':0, 'y':0})
-if KIOSK_MODE == "THREATS":
-    penguin_noscan = Image(source='img/penguin-threats-noscan.png', pos_hint={'x':0, 'y':0})
-    penguin_scan = Image(source='img/penguin-threats-scan.png', pos_hint={'x':0, 'y':0})
-    salmon_noscan = Image(source='img/salmon-threats-noscan.png', pos_hint={'x':0, 'y':0})
-    salmon_scan = Image(source='img/salmon-threats-scan.png', pos_hint={'x':0, 'y':0})
+# if KIOSK_MODE == "FAMILY":
+    # whale_noscan = Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0})
+    # whale_scan = Image(source='img/whale-family-scan.png', pos_hint={'x':0, 'y':0})
+# if KIOSK_MODE == "FOOD":
+    # whale_noscan = Image(source='img/whale-food-noscan.png', pos_hint={'x':0, 'y':0})
+    # whale_scan = Image(source='img/whale-food-scan.png', pos_hint={'x':0, 'y':0})
+    # salmon_noscan = Image(source='img/salmon-food-noscan.png', pos_hint={'x':0, 'y':0})
+    # salmon_scan = Image(source='img/salmon-food-scan.png', pos_hint={'x':0, 'y':0})
+    
+    # penguin_noscan = Image(source='img/penguin-food-noscan.png', pos_hint={'x':0, 'y':0})
+    # penguin_scan = Image(source='img/penguin-food-scan.png', pos_hint={'x':0, 'y':0})
+# if KIOSK_MODE == "THREATS":
+    # penguin_noscan = Image(source='img/penguin-threats-noscan.png', pos_hint={'x':0, 'y':0})
+    # penguin_scan = Image(source='img/penguin-threats-scan.png', pos_hint={'x':0, 'y':0})
+    # salmon_noscan = Image(source='img/salmon-threats-noscan.png', pos_hint={'x':0, 'y':0})
+    # salmon_scan = Image(source='img/salmon-threats-scan.png', pos_hint={'x':0, 'y':0})
 
 class RootWidget(FloatLayout):
 	def __init__(self, **kwargs):
@@ -92,10 +90,11 @@ class AquariumApp(App):
         if self.allow_scan:  ## only read input if allowing scan
             rfid = read_rfid()
             if rfid:
+                self.current_screen.remove_widget(icon_scan)
                 if self.current_vid_playing:
                     self.current_vid_playing.state = 'stop'
                     self.current_vid_playing = None
-                    self.current_screen.remove_widget(icon_scan)
+                    # self.current_screen.remove_widget(icon_scan)
                 if rfid == id_1:
                     self.show_salmon()
                 elif rfid == id_2:
@@ -105,52 +104,40 @@ class AquariumApp(App):
 
     def show_content(self, new_screen, dt):
         if new_screen == self.whale_screen:
-            if HAS_VIDEO[KIOSK_MODE]['whale']:
-                HAS_VIDEO[KIOSK_MODE]['whale'].state = 'play'
-                self.current_vid_playing = HAS_VIDEO[KIOSK_MODE]['whale']
-            else:
-                self.whale_screen.clear_widgets()
-                self.whale_screen.add_widget(whale_noscan)
+            animal = 'whale'
         if new_screen == self.salmon_screen:
-            if HAS_VIDEO[KIOSK_MODE]['salmon']:
-                HAS_VIDEO[KIOSK_MODE]['salmon'].state = 'play'
-                self.current_vid_playing = HAS_VIDEO[KIOSK_MODE]['salmon']
-            else:
-                self.salmon_screen.clear_widgets()
-                self.salmon_screen.add_widget(salmon_noscan)
-                self.salmon_screen.add_widget(salmon_icon_1)
-                # self.salmon_screen.add_widget(salmon_text_1)
+            animal = 'salmon'
         if new_screen == self.penguin_screen:
-            if HAS_VIDEO[KIOSK_MODE]['penguin']:
-                HAS_VIDEO[KIOSK_MODE]['penguin'].state = 'play'
-                self.current_vid_playing = HAS_VIDEO[KIOSK_MODE]['penguin']
-            else:
-                self.penguin_screen.clear_widgets()
-                self.penguin_screen.add_widget(penguin_noscan)
+            animal = 'penguin'
+        
+        if HAS_VIDEO[KIOSK_MODE][animal]:
+            HAS_VIDEO[KIOSK_MODE][animal].state = 'play'
+            self.current_vid_playing = HAS_VIDEO[KIOSK_MODE][animal]
 
         self.allow_scan = False
         self.root.remove_widget(self.current_screen)
         self.root.add_widget(new_screen)
         self.current_screen = new_screen
+        self.current_screen.add_widget(icon_noscan)
         Clock.schedule_once(self.change_allow_scan, 10)
 
-        if self.current_vid_playing:
-            self.current_screen.add_widget(icon_noscan)
+        # if self.current_vid_playing:
+        #     self.current_screen.add_widget(icon_noscan)
 
     def change_allow_scan(self, dt):
         self.allow_scan = not self.allow_scan
-        if self.current_vid_playing:
-            self.current_screen.remove_widget(icon_noscan)
-            self.current_screen.add_widget(icon_scan)
-        if self.current_screen == self.whale_screen and not self.current_vid_playing:
-            self.whale_screen.remove_widget(whale_noscan)
-            self.whale_screen.add_widget(whale_scan)
-        if self.current_screen == self.salmon_screen and not self.current_vid_playing:
-            self.salmon_screen.remove_widget(salmon_noscan)
-            self.salmon_screen.add_widget(salmon_scan)
-        if self.current_screen == self.penguin_screen and not self.current_vid_playing:
-            self.penguin_screen.remove_widget(penguin_noscan)
-            self.penguin_screen.add_widget(penguin_scan)
+        # if self.current_vid_playing:
+        self.current_screen.remove_widget(icon_noscan)
+        self.current_screen.add_widget(icon_scan)
+        # if self.current_screen == self.whale_screen and not self.current_vid_playing:
+        #     self.whale_screen.remove_widget(whale_noscan)
+        #     self.whale_screen.add_widget(whale_scan)
+        # if self.current_screen == self.salmon_screen and not self.current_vid_playing:
+        #     self.salmon_screen.remove_widget(salmon_noscan)
+        #     self.salmon_screen.add_widget(salmon_scan)
+        # if self.current_screen == self.penguin_screen and not self.current_vid_playing:
+        #     self.penguin_screen.remove_widget(penguin_noscan)
+        #     self.penguin_screen.add_widget(penguin_scan)
 
     def WelcomeScreen(self):
         welcome_screen = FloatLayout()
@@ -162,18 +149,34 @@ class AquariumApp(App):
         salmon_screen = FloatLayout()
         if KIOSK_MODE == "FAMILY":
             salmon_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['salmon'])
+        if KIOSK_MODE == "FOOD":
+            salmon_screen.add_widget(Image(source='img/salmon-food-noscan.png', pos_hint={'x':0, 'y':0}))
+            salmon_icon_1 = Button(background_normal='img/test-icon.png', pos_hint={'x':.8, 'y':.4}, size_hint=(.1, .1))
+            salmon_text_1 = ModalView(background='img/test-text.png', pos_hint={'x':.1, 'y':.1}, size_hint=(None, None), size=(400, 400))
+            salmon_icon_1.bind(on_press=salmon_text_1.open)
+            salmon_screen.add_widget(salmon_icon_1)
+        if KIOSK_MODE == "THREATS":
+            salmon_screen.add_widget(Image(source='img/salmon-threats-noscan.png', pos_hint={'x':0, 'y':0}))
         return salmon_screen
 
     def WhaleScreen(self):
         whale_screen = FloatLayout()
         if KIOSK_MODE == "THREATS":
             whale_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['whale'])
+        if KIOSK_MODE == "FAMILY":
+            whale_screen.add_widget(Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0}))
+        if KIOSK_MODE == "FOOD":
+            whale_screen.add_widget(Image(source='img/whale-food-noscan.png', pos_hint={'x':0, 'y':0}))
         return whale_screen
 
     def PenguinScreen(self):
         penguin_screen = FloatLayout()
         if KIOSK_MODE == "FAMILY":
             penguin_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['penguin'])
+        if KIOSK_MODE == "FOOD":
+            penguin_screen.add_widget(Image(source='img/penguin-food-noscan.png', pos_hint={'x':0, 'y':0}))
+        if KIOSK_MODE == "THREATS":
+            penguin_screen.add_widget(Image(source='img/penguin-threats-noscan.png', pos_hint={'x':0, 'y':0}))
         return penguin_screen
 
     def _update_rect(self, instance, value):
