@@ -8,7 +8,7 @@ def send_email(animal, name, toaddrs):
 	msg['Subject'] = 'Your Aquarium Visit'
 	msg['From'] = fromaddr
 	msg['To'] = toaddrs
-	filename = 'IMG_me.png'
+	filename = 'snapshots/'+name+'.png'
 	fp = open(filename, 'rb')
 	img = MIMEImage(fp.read())
 	fp.close()
@@ -21,5 +21,3 @@ def send_email(animal, name, toaddrs):
 	server.login(username,password)
 	server.sendmail(fromaddr, toaddrs, msg.as_string())
 	server.quit()
-
-send_email('', '', 'skiinpink@gmail.com')

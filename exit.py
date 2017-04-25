@@ -1,8 +1,11 @@
+from rfid_reader import *
+from send_email import *
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
-import time
+from kivy.uix.label import Label
+from kivy.clock import Clock
 
 id_1 = bytes(b'7F001AFC68')  ## salmon
 id_2 = bytes(b'7F001B20C4')  ## whale
@@ -51,40 +54,46 @@ class RootWidget(FloatLayout):
         super(RootWidget, self).__init__(**kwargs)
 
 class CameraScreen(BoxLayout):
-    # def __init__(self, animal, **kwargs):
-    #     self.animal = animal
+    def __init__(self, animal, **kwargs):
+        super(CameraScreen, self).__init__(**kwargs)
+        self.animal = animal
 
     def capture(self):
         print("Captured")
         camera = self.ids['camera']
-        name = self.ids['name_input']
-        email = self.ids['email_input']
-        timestr = time.strftime("%Y%m%d_%H%M%S")
-        camera.export_to_png("IMG_me.png")
-
-    # def send_email(self):
-
+        name = self.ids['name_input'].text
+        email = self.ids['email_input'].text
+        camera.export_to_png('snapshots/'+name+'.png')
+        send_email(self.animal, name, email)
 
 class ExitApp(App):
     def build(self):
         self.root = root = RootWidget()
-        self.camera_screen = CameraScreen()
-
-        self.root.add_widget(self.camera_screen)
+        self.exit_screen = self.ExitScreen()
+        
+        self.root.add_widget(self.exit_screen)
         self.allow_scan = True
 
-    # def get_rfid(self, dt):
-    #     if self.allow_scan:  ## only read input if allowing scan
-    #         rfid = read_rfid()
-    #         if rfid:
-    #             if rfid == id_1:
-    #                 self.show_salmon()
-    #             elif rfid == id_2:
-    #                 self.show_whale()
-    #             elif rfid == id_3:
-    #                 self.show_penguin()
+        Clock.schedule_interval(self.get_rfid, 1.0)
 
+    def get_rfid(self, dt):
+        if self.allow_scan:  ## only read input if allowing scan
+            rfid = read_rfid()
+            if rfid:
+                self.allow_scan = False
+                if rfid == id_1:
+                    animal = "Salmon"
+                elif rfid == id_2:
+                    animal = "Right Whale"
+                elif rfid == id_3:
+                    animal = "Rockhopper Penguin"
+                self.root.remove_widget(self.exit_screen)
+                self.root.add_widget(CameraScreen(animal))
 
+    def ExitScreen(self):
+        exit_screen = FloatLayout()
+        exit_screen.add_widget(Label(text='Aquarium Exit - Scan Your Animal', font_size='24pt'))
+        return exit_screen
 
 if __name__ == '__main__':
     ExitApp().run()
