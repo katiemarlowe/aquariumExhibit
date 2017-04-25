@@ -17,35 +17,52 @@ kv = '''
 
     BoxLayout:
         orientation: 'horizontal'
-        size_hint_y: None
-        size_hint_x: .5
-        height: '32dp'
         Label:
-            text: 'Name: '
-        TextInput:
-            id: name_input
+            text: 'Enter your name and email to have your snapshot and\\neverything you have learned about your animal sent to you'
+            font_size: '40pt'
 
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: None
-        size_hint_x: .5
+        height: '32dp'
+        Label:
+            text: 'Name: '
+            size_hint_x: None
+            width: '100dp'
+        TextInput:
+            id: name_input
+            size_hint_x: None
+            width: '150dp'
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
         height: '32dp'
         Label:
             text: 'Email: '
+            size_hint_x: None
+            width: '100dp'
         TextInput:
             id: email_input
+            size_hint_x: None
+            width: '150dp'
 
     Camera:
         id: camera
         resolution: 800, 600
 
     BoxLayout:
-        orientation: 'horizontal'
+        orientation: 'vertical'
         size_hint_y: None
-        height: '48dp'
+        height: '100dp'
         Button:
-            text: 'Capture'
+            background_normal: 'img/exit-screen/capture.png'
             on_press: self.parent.parent.capture()
+            size_hint_x: None
+            size_hint_y: None
+            height: '76.5dp'
+            width: '347.5dp'
+            pos_hint: {'center_x': .5}
 '''
 Builder.load_string(kv)
 
