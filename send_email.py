@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 def send_email(animal, name, toaddrs):
 	fromaddr = 'neaquarium.explorer@gmail.com'
@@ -8,7 +9,9 @@ def send_email(animal, name, toaddrs):
 	msg['Subject'] = 'Your Aquarium Visit'
 	msg['From'] = fromaddr
 	msg['To'] = toaddrs
-	filename = 'snapshots/'+name+'.png'
+	filename = 'snapshots/IMG'+name+'.png'
+	body = "You became an expert on the " + animal + " today!"
+	msg.attach(MIMEText(body, 'plain'))
 	fp = open(filename, 'rb')
 	img = MIMEImage(fp.read())
 	fp.close()
