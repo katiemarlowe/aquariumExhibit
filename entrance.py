@@ -58,7 +58,7 @@ class EntranceApp(App):
         self.root.remove_widget(self.select_animal_screen)
         self.root.add_widget(new_screen)
 
-    def keep_animal(self, instance, animal):
+    def keep_animal(self, instance):
         self.root.remove_widget(self.cur_animal_screen)
         self.root.add_widget(self.keep_screen)
 
@@ -80,8 +80,8 @@ class EntranceApp(App):
     def SalmonScreen(self):
         salmon_screen = FloatLayout()
         salmon_screen.add_widget(Image(source='img/entrance-screen/intro-kiosk5.png'))
-        yes_button = Button(background_normal='img/entrance-screen/yes.png', pos_hint={'center_x':.3, 'y':.2}, size_hint=(.2, .1))
-        no_button = Button(background_normal='img/entrance-screen/no.png', pos_hint={'center_x':.7, 'y':.2}, size_hint=(.2, .1))
+        yes_button = Button(background_normal='img/entrance-screen/yes.png', pos_hint={'center_x':.3, 'y':.1}, size_hint=(None, None), size=(341, 153))
+        no_button = Button(background_normal='img/entrance-screen/no.png', pos_hint={'center_x':.7, 'y':.1}, size_hint=(None, None), size=(341, 153))
         yes_button.bind(on_press=self.keep_animal)
         no_button.bind(on_press=self.dont_keep_animal)
         salmon_screen.add_widget(yes_button)
@@ -91,8 +91,8 @@ class EntranceApp(App):
     def WhaleScreen(self):
         whale_screen = FloatLayout()
         whale_screen.add_widget(Image(source='img/entrance-screen/intro-kiosk2.png'))
-        yes_button = Button(background_normal='img/entrance-screen/yes.png', pos_hint={'center_x':.3, 'y':.2}, size_hint=(.2, .1))
-        no_button = Button(background_normal='img/entrance-screen/no.png', pos_hint={'center_x':.7, 'y':.2}, size_hint=(.2, .1))
+        yes_button = Button(background_normal='img/entrance-screen/yes.png', pos_hint={'center_x':.3, 'y':.1}, size_hint=(None, None), size=(341, 153))
+        no_button = Button(background_normal='img/entrance-screen/no.png', pos_hint={'center_x':.7, 'y':.1}, size_hint=(None, None), size=(341, 153))
         yes_button.bind(on_press=partial(self.keep_animal, animal='whale'))
         no_button.bind(on_press=partial(self.dont_keep_animal, animal='whale'))
         whale_screen.add_widget(yes_button)
@@ -102,8 +102,8 @@ class EntranceApp(App):
     def PenguinScreen(self):
         penguin_screen = FloatLayout()
         penguin_screen.add_widget(Image(source='img/entrance-screen/intro-kiosk4.png'))
-        yes_button = Button(background_normal='img/entrance-screen/yes.png', pos_hint={'center_x':.3, 'y':.2}, size_hint=(.2, .1))
-        no_button = Button(background_normal='img/entrance-screen/no.png', pos_hint={'center_x':.7, 'y':.2}, size_hint=(.2, .1))
+        yes_button = Button(background_normal='img/entrance-screen/yes.png', pos_hint={'center_x':.3, 'y':.1}, size_hint=(None, None), size=(341, 153))
+        no_button = Button(background_normal='img/entrance-screen/no.png', pos_hint={'center_x':.7, 'y':.1}, size_hint=(None, None), size=(341, 153))
         yes_button.bind(on_press=self.keep_animal)
         no_button.bind(on_press=self.dont_keep_animal)
         penguin_screen.add_widget(yes_button)
@@ -113,7 +113,7 @@ class EntranceApp(App):
     def KeepScreen(self):
         keep_screen = FloatLayout()
         keep_screen.add_widget(Image(source='img/entrance-screen/intro-kiosk3.png'))
-        done_button = Button(background_normal='img/entrance-screen/thanks.png', pos_hint={'center_x':.5, 'y':.2}, size_hint=(.2, .1))
+        done_button = Button(background_normal='img/entrance-screen/thanks.png', pos_hint={'center_x':.5, 'y':.1}, size_hint=(None, None), size=(695, 153))
         done_button.bind(on_press=self.done_animal)
         keep_screen.add_widget(done_button)
         return keep_screen
