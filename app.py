@@ -15,7 +15,6 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.popup import Popup
 
 id_1 = bytes(b'7F001AFC68')  ## salmon
-# id_2 = bytes(b'82003BADA1')  
 id_2 = bytes(b'7F001B20C4')  ## whale
 id_3 = bytes(b'7F001B3B09')  ## penguin
 
@@ -34,9 +33,10 @@ HAS_VIDEO = {'FOOD': {'salmon': None, 'whale': None, 'penguin': None},
                 'whale': Video(source="img/whale-threats.mov", pos_hint={'x':0, 'y':0}, options={'eos': 'loop'}), 
                 'penguin': None}}
 
-icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.42, 'y':-.36})
-icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.42, 'y':-.36})
-icon_welcome_scan = Image(source='img/icon-welcome-scan.png', pos_hint={'x':.42, 'y':-.36})
+# icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.42, 'y':-.36})
+# icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.42, 'y':-.36})
+# icon_welcome_scan = Image(source='img/icon-welcome-scan.png', pos_hint={'x':.42, 'y':-.36})
+test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(.15, .15), pos_hint={'x':.9,'y':.1})
 # if KIOSK_MODE == "FAMILY":
     # whale_noscan = Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0})
     # whale_scan = Image(source='img/whale-family-scan.png', pos_hint={'x':0, 'y':0})
@@ -77,7 +77,11 @@ class AquariumApp(App):
 
         self.salmon_screen = self.SalmonScreen()
         self.whale_screen = self.WhaleScreen()
+        self.whale_quiz = self.WhaleQuiz()
         self.penguin_screen = self.PenguinScreen()
+
+        self.whale_right = self.WhaleRight()
+        self.whale_wrong = self.WhaleWrong()
 
         self.show_salmon = Clock.create_trigger(partial(self.show_content, self.salmon_screen))
         self.show_whale = Clock.create_trigger(partial(self.show_content, self.whale_screen))
@@ -90,7 +94,7 @@ class AquariumApp(App):
         if self.allow_scan:  ## only read input if allowing scan
             rfid = read_rfid()
             if rfid:
-                self.current_screen.remove_widget(icon_scan)
+                # self.current_screen.remove_widget(icon_scan)
                 if self.current_vid_playing:
                     self.current_vid_playing.state = 'stop'
                     self.current_vid_playing = None
@@ -118,17 +122,17 @@ class AquariumApp(App):
         self.root.remove_widget(self.current_screen)
         self.root.add_widget(new_screen)
         self.current_screen = new_screen
-        self.current_screen.add_widget(icon_noscan)
-        Clock.schedule_once(self.change_allow_scan, 10)
+        # self.current_screen.add_widget(icon_noscan)
+        # Clock.schedule_once(self.change_allow_scan, 10)
 
         # if self.current_vid_playing:
         #     self.current_screen.add_widget(icon_noscan)
 
-    def change_allow_scan(self, dt):
-        self.allow_scan = not self.allow_scan
+    # def change_allow_scan(self, dt):
+    #     self.allow_scan = not self.allow_scan
         # if self.current_vid_playing:
-        self.current_screen.remove_widget(icon_noscan)
-        self.current_screen.add_widget(icon_scan)
+        # self.current_screen.remove_widget(icon_noscan)
+        # self.current_screen.add_widget(icon_scan)
         # if self.current_screen == self.whale_screen and not self.current_vid_playing:
         #     self.whale_screen.remove_widget(whale_noscan)
         #     self.whale_screen.add_widget(whale_scan)
@@ -139,10 +143,26 @@ class AquariumApp(App):
         #     self.penguin_screen.remove_widget(penguin_noscan)
         #     self.penguin_screen.add_widget(penguin_scan)
 
+    def quiz_time(self, arg):
+        self.root.remove_widget(self.current_screen)
+        self.root.add_widget(self.whale_quiz)
+        self.current_screen = self.whale_quiz
+
+    def show_answer(self, animal, right, arg):
+        self.root.remove_widget(self.current_screen)
+        if animal == 'whale':
+            if right:
+                self.root.add_widget(self.whale_right)
+                self.current_screen = self.whale_right
+            else:
+                self.root.add_widget(self.whale_wrong)
+                self.current_screen = self.whale_wrong
+        self.allow_scan = True
+
     def WelcomeScreen(self):
         welcome_screen = FloatLayout()
         welcome_screen.add_widget(Label(text='Welcome!', font_size='40pt'))
-        welcome_screen.add_widget(icon_welcome_scan)
+        # welcome_screen.add_widget(icon_welcome_scan)
         return welcome_screen
 
     def SalmonScreen(self):
@@ -166,8 +186,40 @@ class AquariumApp(App):
         if KIOSK_MODE == "FAMILY":
             whale_screen.add_widget(Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0}))
         if KIOSK_MODE == "FOOD":
-            whale_screen.add_widget(Image(source='img/whale-food-noscan.png', pos_hint={'x':0, 'y':0}))
+            whale_screen.add_widget(Image(source='img/whale-diet/whale-diet.png', pos_hint={'x':0, 'y':0}))
+            test_knowledge_button.bind(on_press=self.quiz_time)
+            whale_screen.add_widget(test_knowledge_button)
         return whale_screen
+
+    def WhaleQuiz(self):
+        whale_quiz = FloatLayout()
+        if KIOSK_MODE == "FOOD":
+            whale_quiz.add_widget(Image(source='img/whale-diet/whale-diet-quiz.png', pos_hint={'x':0, 'y':0}))
+            btn1 = Button(background_normal='img/whale-diet/buttons2.png', pos_hint={'x':.2, 'y':.4}, size_hint=(.15, .15))
+            btn2 = Button(background_normal='img/whale-diet/buttons3.png', pos_hint={'x':.35, 'y':.4}, size_hint=(.15, .15))
+            btn3 = Button(background_normal='img/whale-diet/buttons4.png', pos_hint={'x':.5, 'y':.4}, size_hint=(.15, .15))
+            btn4 = Button(background_normal='img/whale-diet/buttons5.png', pos_hint={'x':.65, 'y':.4}, size_hint=(.15, .15))
+            btn1.bind(on_press=partial(self.show_answer, 'whale', False))
+            btn2.bind(on_press=partial(self.show_answer, 'whale', True))
+            btn3.bind(on_press=partial(self.show_answer, 'whale', False))
+            btn4.bind(on_press=partial(self.show_answer, 'whale', False))
+            whale_quiz.add_widget(btn1)
+            whale_quiz.add_widget(btn2)
+            whale_quiz.add_widget(btn3)
+            whale_quiz.add_widget(btn4)
+        return whale_quiz
+
+    def WhaleRight(self):
+        whale_right = FloatLayout()
+        if KIOSK_MODE == "FOOD":
+            whale_right.add_widget(Image(source='img/whale-diet/whale-diet-quiz-right.png', pos_hint={'x':0, 'y':0}))
+        return whale_right
+
+    def WhaleWrong(self):
+        whale_wrong = FloatLayout()
+        if KIOSK_MODE == "FOOD":
+            whale_wrong.add_widget(Image(source='img/whale-diet/whale-diet-quiz-wrong.png', pos_hint={'x':0, 'y':0}))
+        return whale_wrong
 
     def PenguinScreen(self):
         penguin_screen = FloatLayout()
@@ -178,6 +230,7 @@ class AquariumApp(App):
         if KIOSK_MODE == "THREATS":
             penguin_screen.add_widget(Image(source='img/penguin-threats-noscan.png', pos_hint={'x':0, 'y':0}))
         return penguin_screen
+
 
     def _update_rect(self, instance, value):
     	self.rect.pos = instance.pos
