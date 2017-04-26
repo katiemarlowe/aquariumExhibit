@@ -10,7 +10,7 @@ def send_email(animal, name, toaddrs):
 	msg['From'] = fromaddr
 	msg['To'] = toaddrs
 	filename = 'snapshots/IMG'+name+'.png'
-	body = "You became an expert on the " + animal + " today!"
+	body = "You became an expert on the " + animal + " today!\nVisit the New England Aquarium website to learn more: http://www.neaq.org"
 	msg.attach(MIMEText(body, 'plain'))
 	fp = open(filename, 'rb')
 	img = MIMEImage(fp.read())

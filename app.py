@@ -35,7 +35,7 @@ HAS_VIDEO = {'FOOD': {'salmon': None, 'whale': None, 'penguin': None},
 
 # icon_noscan = Image(source='img/icon-noscan.png', pos_hint={'x':.42, 'y':-.36})
 icon_scan = Image(source='img/icon-scan.png', pos_hint={'x':.42, 'y':-.36})
-# icon_welcome_scan = Image(source='img/icon-welcome-scan.png', pos_hint={'x':.42, 'y':-.36})
+icon_welcome_scan = Image(source='img/icon-welcome-scan.png', pos_hint={'x':.42, 'y':-.36})
     # whale_noscan = Image(source='img/whale-family-noscan.png', pos_hint={'x':0, 'y':0})
     # whale_scan = Image(source='img/whale-family-scan.png', pos_hint={'x':0, 'y':0})
 # if KIOSK_MODE == "FOOD":
@@ -190,8 +190,11 @@ class AquariumApp(App):
 
     def WelcomeScreen(self):
         welcome_screen = FloatLayout()
-        welcome_screen.add_widget(Label(text='Welcome!', font_size='40pt'))
-        # welcome_screen.add_widget(icon_welcome_scan)
+        if KIOSK_MODE == "FOOD":
+            welcome_screen.add_widget(Image(source='img/diet.png', pos_hint={'x':0, 'y':0}))
+        else:
+            welcome_screen.add_widget(Label(text='Welcome!', font_size='40pt'))
+            welcome_screen.add_widget(icon_welcome_scan)
         return welcome_screen
 
     def SalmonScreen(self):
@@ -221,7 +224,7 @@ class AquariumApp(App):
             whale_screen.add_widget(test_knowledge_button)
         if KIOSK_MODE == "FOOD":
             whale_screen.add_widget(Image(source='img/whale-diet/whale-diet.png', pos_hint={'x':0, 'y':0}))
-            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.85,'y':.1})
+            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.83,'y':.05})
             test_knowledge_button.bind(on_press=partial(self.quiz_time, 'whale'))
             whale_screen.add_widget(test_knowledge_button)
         return whale_screen
@@ -230,10 +233,10 @@ class AquariumApp(App):
         whale_quiz = FloatLayout()
         if KIOSK_MODE == "FOOD":
             whale_quiz.add_widget(Image(source='img/whale-diet/whale-diet-quiz.png', pos_hint={'x':0, 'y':0}))
-            btn1 = Button(background_normal='img/whale-diet/buttons2.png', pos_hint={'x':.2, 'y':.3}, size_hint=(.15, .15))
-            btn2 = Button(background_normal='img/whale-diet/buttons3.png', pos_hint={'x':.35, 'y':.3}, size_hint=(.15, .15))
-            btn3 = Button(background_normal='img/whale-diet/buttons4.png', pos_hint={'x':.5, 'y':.3}, size_hint=(.15, .15))
-            btn4 = Button(background_normal='img/whale-diet/buttons5.png', pos_hint={'x':.65, 'y':.3}, size_hint=(.15, .15))
+            btn1 = Button(background_normal='img/whale-diet/buttons2.png', pos_hint={'x':.14, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn2 = Button(background_normal='img/whale-diet/buttons3.png', pos_hint={'x':.32, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn3 = Button(background_normal='img/whale-diet/buttons4.png', pos_hint={'x':.5, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn4 = Button(background_normal='img/whale-diet/buttons5.png', pos_hint={'x':.68, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn1.bind(on_press=partial(self.show_answer, 'whale', False))
             btn2.bind(on_press=partial(self.show_answer, 'whale', True))
             btn3.bind(on_press=partial(self.show_answer, 'whale', False))
@@ -244,10 +247,10 @@ class AquariumApp(App):
             whale_quiz.add_widget(btn4)
         if KIOSK_MODE == "FAMILY":
             whale_quiz.add_widget(Image(source='img/whale-reproduction/whale-reproduction-quiz.png', pos_hint={'x':0, 'y':0}))
-            btn1 = Button(background_normal='img/whale-reproduction/buttons13.png', pos_hint={'x':.2, 'y':.3}, size_hint=(.15, .15))
-            btn2 = Button(background_normal='img/whale-reproduction/buttons14.png', pos_hint={'x':.35, 'y':.3}, size_hint=(.15, .15))
-            btn3 = Button(background_normal='img/whale-reproduction/buttons15.png', pos_hint={'x':.5, 'y':.3}, size_hint=(.15, .15))
-            btn4 = Button(background_normal='img/whale-reproduction/buttons16.png', pos_hint={'x':.65, 'y':.3}, size_hint=(.15, .15))
+            btn1 = Button(background_normal='img/whale-reproduction/buttons13.png', pos_hint={'x':.14, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn2 = Button(background_normal='img/whale-reproduction/buttons14.png', pos_hint={'x':.32, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn3 = Button(background_normal='img/whale-reproduction/buttons15.png', pos_hint={'x':.5, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn4 = Button(background_normal='img/whale-reproduction/buttons16.png', pos_hint={'x':.68, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn1.bind(on_press=partial(self.show_answer, 'whale', False))
             btn2.bind(on_press=partial(self.show_answer, 'whale', False))
             btn3.bind(on_press=partial(self.show_answer, 'whale', True))
@@ -262,10 +265,10 @@ class AquariumApp(App):
         salmon_quiz = FloatLayout()
         if KIOSK_MODE == "FOOD":
             salmon_quiz.add_widget(Image(source='img/salmon-diet/salmon-diet-quiz.png', pos_hint={'x':0, 'y':0}))
-            btn1 = Button(background_normal='img/salmon-diet/buttons25.png', pos_hint={'x':.2, 'y':.3}, size_hint=(None, None), size=(293,279))
-            btn2 = Button(background_normal='img/salmon-diet/buttons26.png', pos_hint={'x':.35, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn1 = Button(background_normal='img/salmon-diet/buttons25.png', pos_hint={'x':.14, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn2 = Button(background_normal='img/salmon-diet/buttons26.png', pos_hint={'x':.32, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn3 = Button(background_normal='img/salmon-diet/buttons27.png', pos_hint={'x':.5, 'y':.3}, size_hint=(None, None), size=(293,279))
-            btn4 = Button(background_normal='img/salmon-diet/buttons28.png', pos_hint={'x':.65, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn4 = Button(background_normal='img/salmon-diet/buttons28.png', pos_hint={'x':.68, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn1.bind(on_press=partial(self.show_answer, 'salmon', False))
             btn2.bind(on_press=partial(self.show_answer, 'salmon', True))
             btn3.bind(on_press=partial(self.show_answer, 'salmon', False))
@@ -276,10 +279,10 @@ class AquariumApp(App):
             salmon_quiz.add_widget(btn4)
         if KIOSK_MODE == "THREATS":
             salmon_quiz.add_widget(Image(source='img/salmon-threats/salmon-threats-quiz.png', pos_hint={'x':0, 'y':0}))
-            btn1 = Button(background_normal='img/salmon-threats/buttons29.png', pos_hint={'x':.2, 'y':.3}, size_hint=(None, None), size=(293,279))
-            btn2 = Button(background_normal='img/salmon-threats/buttons30.png', pos_hint={'x':.35, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn1 = Button(background_normal='img/salmon-threats/buttons29.png', pos_hint={'x':.14, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn2 = Button(background_normal='img/salmon-threats/buttons30.png', pos_hint={'x':.32, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn3 = Button(background_normal='img/salmon-threats/buttons31.png', pos_hint={'x':.5, 'y':.3}, size_hint=(None, None), size=(293,279))
-            btn4 = Button(background_normal='img/salmon-threats/buttons32.png', pos_hint={'x':.65, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn4 = Button(background_normal='img/salmon-threats/buttons32.png', pos_hint={'x':.68, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn1.bind(on_press=partial(self.show_answer, 'salmon', False))
             btn2.bind(on_press=partial(self.show_answer, 'salmon', False))
             btn3.bind(on_press=partial(self.show_answer, 'salmon', False))
@@ -294,10 +297,10 @@ class AquariumApp(App):
         penguin_quiz = FloatLayout()
         if KIOSK_MODE == "FOOD":
             penguin_quiz.add_widget(Image(source='img/penguin-diet/penguin-diet-quiz.png', pos_hint={'x':0, 'y':0}))
-            btn1 = Button(background_normal='img/penguin-diet/buttons17.png', pos_hint={'x':.2, 'y':.3}, size_hint=(None, None), size=(293,279))
-            btn2 = Button(background_normal='img/penguin-diet/buttons18.png', pos_hint={'x':.35, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn1 = Button(background_normal='img/penguin-diet/buttons17.png', pos_hint={'x':.14, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn2 = Button(background_normal='img/penguin-diet/buttons18.png', pos_hint={'x':.32, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn3 = Button(background_normal='img/penguin-diet/buttons19.png', pos_hint={'x':.5, 'y':.3}, size_hint=(None, None), size=(293,279))
-            btn4 = Button(background_normal='img/penguin-diet/buttons20.png', pos_hint={'x':.65, 'y':.3}, size_hint=(None, None), size=(293,279))
+            btn4 = Button(background_normal='img/penguin-diet/buttons20.png', pos_hint={'x':.68, 'y':.3}, size_hint=(None, None), size=(293,279))
             btn1.bind(on_press=partial(self.show_answer, 'penguin', False))
             btn2.bind(on_press=partial(self.show_answer, 'penguin', False))
             btn3.bind(on_press=partial(self.show_answer, 'penguin', True))
@@ -308,10 +311,10 @@ class AquariumApp(App):
             penguin_quiz.add_widget(btn4)
         if KIOSK_MODE == "THREATS":
             penguin_quiz.add_widget(Image(source='img/penguin-threats/penguin-threats-quiz.png', pos_hint={'x':0, 'y':0}))
-            btn1 = Button(background_normal='img/penguin-threats/buttons21.png', pos_hint={'x':.2, 'y':.4}, size_hint=(None, None), size=(293,279))
-            btn2 = Button(background_normal='img/penguin-threats/buttons22.png', pos_hint={'x':.35, 'y':.4}, size_hint=(None, None), size=(293,279))
+            btn1 = Button(background_normal='img/penguin-threats/buttons21.png', pos_hint={'x':.14, 'y':.4}, size_hint=(None, None), size=(293,279))
+            btn2 = Button(background_normal='img/penguin-threats/buttons22.png', pos_hint={'x':.32, 'y':.4}, size_hint=(None, None), size=(293,279))
             btn3 = Button(background_normal='img/penguin-threats/buttons23.png', pos_hint={'x':.5, 'y':.4}, size_hint=(None, None), size=(293,279))
-            btn4 = Button(background_normal='img/penguin-threats/buttons24.png', pos_hint={'x':.65, 'y':.4}, size_hint=(None, None), size=(293,279))
+            btn4 = Button(background_normal='img/penguin-threats/buttons24.png', pos_hint={'x':.68, 'y':.4}, size_hint=(None, None), size=(293,279))
             btn1.bind(on_press=partial(self.show_answer, 'penguin', True))
             btn2.bind(on_press=partial(self.show_answer, 'penguin', False))
             btn3.bind(on_press=partial(self.show_answer, 'penguin', False))
