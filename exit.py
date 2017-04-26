@@ -8,6 +8,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.clock import Clock
+from kivy.graphics import Color, Rectangle
 
 id_1 = bytes(b'7F001AFC68')  ## salmon
 id_2 = bytes(b'7F001B20C4')  ## whale
@@ -35,6 +36,7 @@ kv = '''
             id: name_input
             size_hint_x: None
             width: '150dp'
+            focus: True
 
     BoxLayout:
         orientation: 'horizontal'
@@ -93,6 +95,12 @@ class CameraScreen(BoxLayout):
 class ExitApp(App):
     def build(self):
         self.root = root = RootWidget(app=self)
+        root.bind(size=self._update_rect, pos=self._update_rect)
+
+        with root.canvas.before:
+            Color(0, 1, 1, .5)  # torquise
+            self.rect = Rectangle(size=root.size, pos=root.pos)
+
         self.camera_screen = None
         self.exit_screen1 = self.ExitScreen1()
         self.exit_screen2 = self.ExitScreen2()
@@ -138,6 +146,10 @@ class ExitApp(App):
         restart_button.bind(on_press=self.restart)
         exit_screen.add_widget(restart_button)
         return exit_screen
+
+    def _update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
 
 if __name__ == '__main__':
     ExitApp().run()
