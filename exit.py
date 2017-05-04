@@ -1,5 +1,7 @@
 from rfid_reader import *
 from send_email import *
+from send_sms import *
+import re
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
@@ -10,9 +12,10 @@ from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 
-id_1 = bytes(b'7F001AFC68')  ## salmon
+# id_1 = bytes(b'7F001AFC68')  ## salmon
 id_2 = bytes(b'7F001B20C4')  ## whale
 id_3 = bytes(b'7F001B3B09')  ## penguin
+id_1 = bytes(b'82003BADA1')
 
 kv = '''
 <CameraScreen>:
@@ -37,6 +40,7 @@ kv = '''
             size_hint_x: None
             width: '150dp'
             focus: True
+            write_tab: False
 
     BoxLayout:
         orientation: 'horizontal'
@@ -50,10 +54,26 @@ kv = '''
             id: email_input
             size_hint_x: None
             width: '150dp'
+            write_tab: False
 
-    Camera:
-        id: camera
-        resolution: 800, 600
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'Mobile Number: '
+            size_hint_x: None
+            width: '100dp'
+        TextInput:
+            id: phone_input
+            size_hint_x: None
+            width: '150dp'
+
+    BoxLayout:
+        orientation: 'horizontal'
+        Camera:
+            id: camera
+            resolution: 800, 600
 
     BoxLayout:
         orientation: 'vertical'
@@ -77,20 +97,20 @@ class RootWidget(FloatLayout):
 
 
 class CameraScreen(BoxLayout):
-    def __init__(self, animal, **kwargs):
+    def __init__(self, **kwargs):
         super(CameraScreen, self).__init__(**kwargs)
-        self.animal = animal
 
     def capture(self):
         print("Captured")
         camera = self.ids['camera']
         name = self.ids['name_input'].text
         email = self.ids['email_input'].text
+        phone_number = self.ids['phone_input'].text
+        self.ids['name_input'].focus = True
         camera.export_to_png('snapshots/IMG'+name+'.png')
-        send_email(self.animal, name, email)
         self.ids['name_input'].text = ''
         self.ids['email_input'].text = ''
-        self.parent.app.pic_captured()
+        self.parent.app.pic_captured(name, email, phone_number)
 
 class ExitApp(App):
     def build(self):
@@ -101,12 +121,13 @@ class ExitApp(App):
             Color(0, 1, 1, .5)  # torquise
             self.rect = Rectangle(size=root.size, pos=root.pos)
 
-        self.camera_screen = None
+        self.camera_screen = CameraScreen()
         self.exit_screen1 = self.ExitScreen1()
         self.exit_screen2 = self.ExitScreen2()
         
         self.root.add_widget(self.exit_screen1)
         self.allow_scan = True
+        self.animal = None
 
         Clock.schedule_interval(self.get_rfid, 1.0)
 
@@ -116,18 +137,25 @@ class ExitApp(App):
             if rfid:
                 self.allow_scan = False
                 if rfid == id_1:
-                    animal = "Salmon"
+                    self.animal = "Salmon"
                 elif rfid == id_2:
-                    animal = "Right Whale"
+                    self.animal = "Right Whale"
                 elif rfid == id_3:
-                    animal = "Rockhopper Penguin"
+                    self.animal = "Rockhopper Penguin"
                 self.root.remove_widget(self.exit_screen1)
-                self.camera_screen = CameraScreen(animal)
                 self.root.add_widget(self.camera_screen)
 
-    def pic_captured(self):
+    def pic_captured(self, name, email, phone_number):
         self.root.remove_widget(self.camera_screen)
         self.root.add_widget(self.exit_screen2)
+        if re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            send_email(self.animal, name, email)
+        else:
+            print('Email address not valid')
+        if len(phone_number) == 10:
+            send_sms(phone_number, self.animal)
+        else:
+            print('Phone number not valid')
 
     def restart(self, arg):
         self.root.remove_widget(self.exit_screen2)
