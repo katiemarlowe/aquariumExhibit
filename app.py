@@ -14,9 +14,10 @@ from kivy.uix.video import Video
 from kivy.uix.modalview import ModalView
 from kivy.uix.popup import Popup
 
-id_1 = bytes(b'7F001AFC68')  ## salmon
+id_3 = bytes(b'7F001AFC68')  ## salmon
 id_2 = bytes(b'7F001B20C4')  ## whale
-id_3 = bytes(b'7F001B3B09')  ## penguin
+# id_3 = bytes(b'7F001B3B09')  ## penguin
+id_1 = bytes(b'82003BADA1')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", help="", type=str)
@@ -203,12 +204,12 @@ class AquariumApp(App):
             salmon_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['salmon'])
         if KIOSK_MODE == "FOOD":
             salmon_screen.add_widget(Image(source='img/salmon-diet/salmon-diet.png', pos_hint={'x':0, 'y':0}))
-            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.85,'y':.1})
+            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.83,'y':.05})
             test_knowledge_button.bind(on_press=partial(self.quiz_time, 'salmon'))
             salmon_screen.add_widget(test_knowledge_button)
         if KIOSK_MODE == "THREATS":
             salmon_screen.add_widget(Image(source='img/salmon-threats/salmon-threats.png', pos_hint={'x':0, 'y':0}))
-            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.85,'y':.1})
+            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.83,'y':.05})
             test_knowledge_button.bind(on_press=partial(self.quiz_time, 'salmon'))
             salmon_screen.add_widget(test_knowledge_button)
         return salmon_screen
@@ -219,7 +220,7 @@ class AquariumApp(App):
             whale_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['whale'])
         if KIOSK_MODE == "FAMILY":
             whale_screen.add_widget(Image(source='img/whale-reproduction/whale-reproduction.png', pos_hint={'x':0, 'y':0}))
-            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.85,'y':.1})
+            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.83,'y':.05})
             test_knowledge_button.bind(on_press=partial(self.quiz_time, 'whale'))
             whale_screen.add_widget(test_knowledge_button)
         if KIOSK_MODE == "FOOD":
@@ -379,12 +380,12 @@ class AquariumApp(App):
             penguin_screen.add_widget(HAS_VIDEO[KIOSK_MODE]['penguin'])
         if KIOSK_MODE == "FOOD":
             penguin_screen.add_widget(Image(source='img/penguin-diet/penguin-diet.png', pos_hint={'x':0, 'y':0}))
-            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.85,'y':.1})
+            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.83,'y':.05})
             test_knowledge_button.bind(on_press=partial(self.quiz_time, 'penguin'))
             penguin_screen.add_widget(test_knowledge_button)
         if KIOSK_MODE == "THREATS":
             penguin_screen.add_widget(Image(source='img/penguin-threats/penguin-threats.png', pos_hint={'x':0, 'y':0}))
-            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.85,'y':.1})
+            test_knowledge_button = Button(background_normal='img/test-knowledge.png', size_hint=(None, None), size=(293, 254), pos_hint={'x':.83,'y':.05})
             test_knowledge_button.bind(on_press=partial(self.quiz_time, 'penguin'))
             penguin_screen.add_widget(test_knowledge_button)
         return penguin_screen
