@@ -8,10 +8,10 @@ from functools import partial
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 
-# id_1 = bytes(b'7F001AFC68')  ## salmon
+id_3 = bytes(b'7F001AFC68')  ## penguin
 id_2 = bytes(b'7F001B20C4')  ## whale
-id_3 = bytes(b'7F001B3B09')  ## penguin
-id_1 = bytes(b'82003BADA1')
+id_1 = bytes(b'7F001B3B09')  ## salmon
+# id_1 = bytes(b'82003BADA1')
 
 class RootWidget(FloatLayout):
     def __init__(self, **kwargs):

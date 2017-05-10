@@ -12,10 +12,10 @@ from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 
-# id_1 = bytes(b'7F001AFC68')  ## salmon
+id_3 = bytes(b'7F001AFC68')  ## penguin
 id_2 = bytes(b'7F001B20C4')  ## whale
-id_3 = bytes(b'7F001B3B09')  ## penguin
-id_1 = bytes(b'82003BADA1')
+id_1 = bytes(b'7F001B3B09')  ## salmon
+# id_1 = bytes(b'82003BADA1')
 
 kv = '''
 <CameraScreen>:
@@ -186,7 +186,8 @@ class ExitApp(App):
             send_email(self.animal, email_addr, self.current_img_num)
         else:
             print('Email address not valid')
-        if len(phone_number) == 10:
+        # if len(phone_number) == 10:
+        if phone_number == '9174030096':
             send_sms(phone_number, self.animal)
         else:
             print('Phone number not valid')

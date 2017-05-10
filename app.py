@@ -14,10 +14,10 @@ from kivy.uix.video import Video
 from kivy.uix.modalview import ModalView
 from kivy.uix.popup import Popup
 
-id_3 = bytes(b'7F001AFC68')  ## salmon
+id_3 = bytes(b'7F001AFC68')  ## penguin
 id_2 = bytes(b'7F001B20C4')  ## whale
-# id_3 = bytes(b'7F001B3B09')  ## penguin
-id_1 = bytes(b'82003BADA1')
+id_1 = bytes(b'7F001B3B09')  
+# id_1 = bytes(b'82003BADA1')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", help="", type=str)
@@ -193,6 +193,10 @@ class AquariumApp(App):
         welcome_screen = FloatLayout()
         if KIOSK_MODE == "FOOD":
             welcome_screen.add_widget(Image(source='img/diet.png', pos_hint={'x':0, 'y':0}))
+        elif KIOSK_MODE == "THREATS":
+            welcome_screen.add_widget(Image(source='img/threats.png', pos_hint={'x':0, 'y':0}))
+        elif KIOSK_MODE == "FAMILY":
+            welcome_screen.add_widget(Image(source='img/reproduction.png', pos_hint={'x':0, 'y':0}))
         else:
             welcome_screen.add_widget(Label(text='Welcome!', font_size='40pt'))
             welcome_screen.add_widget(icon_welcome_scan)
