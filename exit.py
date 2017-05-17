@@ -14,10 +14,10 @@ from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from functools import partial
 
-id_3 = bytes(b'7F001AFC68')  ## penguin
+# id_3 = bytes(b'7F001AFC68')  ## penguin
 id_2 = bytes(b'7F001B20C4')  ## whale
 id_1 = bytes(b'7F001B3B09')  ## salmon
-# id_1 = bytes(b'82003BADA1')
+id_3 = bytes(b'82003BADA1')
 
 kv = '''
 <CameraScreen>:

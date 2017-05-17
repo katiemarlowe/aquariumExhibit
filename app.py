@@ -14,10 +14,10 @@ from kivy.uix.video import Video
 from kivy.uix.modalview import ModalView
 from kivy.uix.popup import Popup
 
-id_3 = bytes(b'7F001AFC68')  ## penguin
+# id_3 = bytes(b'7F001AFC68')  ## penguin
 id_2 = bytes(b'7F001B20C4')  ## whale
 id_1 = bytes(b'7F001B3B09')  
-# id_1 = bytes(b'82003BADA1')
+id_3 = bytes(b'82003BADA1')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", help="", type=str)
