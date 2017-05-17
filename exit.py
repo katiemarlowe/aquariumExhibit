@@ -9,8 +9,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.button import Button
+from kivy.uix.spinner import Spinner
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
+from functools import partial
 
 id_3 = bytes(b'7F001AFC68')  ## penguin
 id_2 = bytes(b'7F001B20C4')  ## whale
@@ -30,12 +32,6 @@ kv = '''
             bold: True
 
     BoxLayout:
-        orientation: 'horizontal'
-        Camera:
-            id: camera
-            resolution: 800, 600
-
-    BoxLayout:
         orientation: 'vertical'
         size_hint_y: None
         height: '100dp'
@@ -48,20 +44,26 @@ kv = '''
             width: '347.5dp'
             pos_hint: {'center_x': .5}
 
+    BoxLayout:
+        orientation: 'horizontal'
+        Camera:
+            id: camera
+            resolution: 800, 600
+
 <EmailScreen>
     orientation: 'vertical'
 
     Label:
         text: 'You guys look great!'
         font_size: '30pt'
-        pos_hint: {'center_x': .5, 'center_y': .9}
+        pos_hint: {'center_x': .5, 'center_y': .95}
         color: .15, .17, .47, 1
         bold: True
 
     Label:
         text: 'Enter your email to get the photo and\\n more information about your animal'
         font_size: '30pt'
-        pos_hint: {'center_x': .5, 'center_y': .5}
+        pos_hint: {'center_x': .5, 'center_y': .52}
         color: .15, .17, .47, 1
         bold: True
 
@@ -73,13 +75,13 @@ kv = '''
         width: '500dp'
         height: '60dp'
         font_size: '30pt'
-        pos_hint: {'center_x': .5, 'center_y': .4}
+        pos_hint: {'center_x': .5, 'center_y': .42}
         write_tab: False
 
     Label:
         text: 'If you would like your photo texted to you\\n enter your mobile number below'
         font_size: '20pt'
-        pos_hint: {'center_x': .5, 'center_y': .3}
+        pos_hint: {'center_x': .5, 'center_y': .32}
         color: .15, .17, .47, 1
         bold: True
 
@@ -90,8 +92,20 @@ kv = '''
         width: '500dp'
         height: '60dp'
         font_size: '30pt'
-        pos_hint: {'center_x': .5, 'center_y': .2}
+        pos_hint: {'center_x': .5, 'center_y': .25}
         write_tab: False
+
+    Spinner:
+        id: carrier_input
+        text: "Carrier"
+        values: ["Verizon", "AT&T", "T-Mobile", "Sprint"]
+        font_size: '20pt'
+        background_color: .15, .17, .47, 1
+        size_hint_x: None
+        size_hint_y: None
+        height: '60dp'
+        width: '100dp'
+        pos_hint: {'center_x': .73, 'center_y': .25}
 
     Button:
         background_normal: 'img/exit-screen/next.png'
@@ -128,10 +142,12 @@ class EmailScreen(FloatLayout):
     def info(self):
         email_addr = self.ids['email_input'].text
         phone_number = self.ids['phone_input'].text
+        phone_carrier = self.ids['carrier_input'].text
         self.ids['email_input'].focus = True
         self.ids['email_input'].text = ''
         self.ids['phone_input'].text = ''
-        self.parent.app.collect_info(email_addr, phone_number)
+        self.ids['carrier_input'].text = 'Carrier'
+        self.parent.app.collect_info(email_addr, phone_number, phone_carrier)
         
 
 class ExitApp(App):
@@ -175,20 +191,22 @@ class ExitApp(App):
         self.root.add_widget(self.email_screen)
         save_photo(img_num)
         self.current_img_num = img_num
-        self.current_image = Image(source='snapshots/IMG'+str(img_num)+'LOGO.png', pos_hint={'center_x': .5, 'center_y': .7}, size_hint=(None, None), size=(438.2, 246.4))
+        self.current_image = Image(source='snapshots/IMG'+str(img_num)+'LOGO.png', pos_hint={'center_x': .5, 'center_y': .75}, size_hint=(None, None), size=(438.2, 246.4))
         self.email_screen.add_widget(self.current_image)
 
-    def collect_info(self, email_addr, phone_number):
+    def collect_info(self, email_addr, phone_number, phone_carrier):
         self.root.remove_widget(self.email_screen)
         self.email_screen.remove_widget(self.current_image)
         self.root.add_widget(self.exit_screen2)
+        Clock.schedule_once(partial(self.send, email_addr, phone_number, phone_carrier), 0.5)
+
+    def send(self, email_addr, phone_number, phone_carrier, dt):
         if re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email_addr):
             send_email(self.animal, email_addr, self.current_img_num)
         else:
             print('Email address not valid')
-        # if len(phone_number) == 10:
-        if phone_number == '9174030096':
-            send_sms(phone_number, self.animal)
+        if len(phone_number) == 10 and phone_carrier != 'Carrier':
+            send_sms(phone_number, phone_carrier, self.animal, self.current_img_num)
         else:
             print('Phone number not valid')
 

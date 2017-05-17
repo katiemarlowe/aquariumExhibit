@@ -1,6 +1,5 @@
 import smtplib
 import codecs
-from twilio.rest import Client
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -41,15 +40,40 @@ def send_email(animal, toaddrs, img_num):
 	server.sendmail(fromaddr, toaddrs, msg.as_string())
 	server.quit()
 
-# Your Account SID from twilio.com/console
-account_sid = "AC0efdfe0d5464098a719c5e5f83ea97bb"
-# Your Auth Token from twilio.com/console
-auth_token  = "f4eff994c2687cd3b8de4ac0b4636e79"
-
-client = Client(account_sid, auth_token)
-
-def send_sms(phone_number, animal):
-	message = client.messages.create(
-	    to='+1'+phone_number, 
-	    from_="+16466815119",
-	    body="Thanks for visiting the New England Aquarium! Show this message to the gift shop to receive 30% off a "+animal+" souvenir.")
+def send_sms(phone_number, phone_carrier, animal, img_num):
+	# extensions = ['@mms.att.net', '@mms.att.net', '@vzwpix.com', '@messaging.sprintpcs.com']
+	if phone_carrier == 'AT&T':
+		ex = '@mms.att.net'
+	elif phone_carrier == 'T-Mobile':
+		ex = '@mms.att.net'
+	elif phone_carrier == 'Verizon':
+		ex = '@vzwpix.com'
+	elif phone_carrier == 'Sprint':
+		ex = '@messaging.sprintpcs.com'
+	fromaddr = 'neaquarium.explorer@gmail.com'
+	fp = open('snapshots/IMG'+str(img_num)+'LOGO.png', 'rb')
+	img = MIMEImage(fp.read())
+	fp.close()
+	username = 'neaquarium.explorer@gmail.com'
+	password = 'CMS.634!'
+	server = smtplib.SMTP('smtp.gmail.com:587')
+	server.ehlo()
+	server.starttls()
+	server.login(username,password)
+	toaddr = phone_number+ex
+	msg = MIMEMultipart()
+	msg['Subject'] = 'Your ' + animal + ' selfie!'
+	msg['From'] = fromaddr
+	msg['To'] = toaddr
+	msg.attach(img)
+	server.sendmail(fromaddr, toaddr, msg.as_string())
+	# for ex in extensions:
+	# 	toaddr = phone_number+ex
+	# 	msg = MIMEMultipart()
+	# 	msg['Subject'] = 'Your ' + animal + ' selfie!'
+	# 	msg['From'] = fromaddr
+	# 	msg['To'] = toaddr
+	# 	msg.attach(img)
+	# 	server.sendmail(fromaddr, toaddr, msg.as_string())
+	server.quit()
+	print('text sent to: ', toaddr)
